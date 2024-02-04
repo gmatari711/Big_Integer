@@ -1,0 +1,8 @@
+# ninja log v5
+1	384	7273123519595494	CMakeFiles/Big_Integer.dir/library.cpp.obj	78305c183214506c
+358	479	7273127037632188	libBig_Integer.dll	ad1f9fff33de855e
+19	2063	7284354400714398	CMakeFiles/Big_Integer.dir/bigint.cpp.obj	dedfc1d4c5e961c0
+4	356	7273127036453551	CMakeFiles/Big_Integer.dir/Polynom.cpp.obj	bd29cde084fc015f
+16	511	7273123520868972	CMakeFiles/Big_Integer.dir/test.cpp.obj	a99879979901bfb7
+8	608	7284430446581372	build.ninja	392d486ff0cb3e20
+358	479	7273127037632188	libBig_Integer.dll.a	ad1f9fff33de855e
