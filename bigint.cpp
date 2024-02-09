@@ -100,28 +100,6 @@ BigInt BigInt::operator-() const {
     result.m_sign = (m_sign == NEG)? POS : NEG;
     return result;
 }
-// Assume same sign
-BigInt BigInt::add(const BigInt &lhs, const BigInt &rhs) {
-    size_t              i = 0;
-    uint8_t             carry = 0;
-    BigInt              result = 0;
-
-    while (i < std::max(lhs.m_big_integer_number.size() ,rhs.m_big_integer_number.size())){
-        uint32_t  current = carry;
-        if(i < lhs.m_big_integer_number.size()){
-            current+= lhs.m_big_integer_number[i];
-        }
-        if(i < rhs.m_big_integer_number.size()){
-            current+= rhs.m_big_integer_number[i];
-        }
-        result.m_big_integer_number.push_back(current % BASE);
-        carry = current / BASE;
-    }
-    if(carry){
-        result.m_big_integer_number.push_back(carry);
-    }
-    return result;
-}
 
 BigInt BigInt::sub(const BigInt &lhs, const BigInt &rhs) {
     size_t              max_len = std::max(lhs.m_big_integer_number.size(), rhs.m_big_integer_number.size());
@@ -284,6 +262,52 @@ BigInt BigInt::abs() const {
     BigInt result(*this);
     result.m_sign = POS;
 
+    return result;
+}
+
+// Assume same sign
+BigInt BigInt::add(const BigInt &val) const {
+    size_t              i = 0;
+    uint8_t             carry = 0;
+    BigInt              result = 0;
+
+    while (i < std::max(m_big_integer_number.size() ,val.m_big_integer_number.size())){
+        uint32_t  current = carry;
+        if(i < m_big_integer_number.size()){
+            current+= m_big_integer_number[i];
+        }
+        if(i < val.m_big_integer_number.size()){
+            current+= val.m_big_integer_number[i];
+        }
+        result.m_big_integer_number.push_back(current % BASE);
+        carry = current / BASE;
+    }
+    if(carry){
+        result.m_big_integer_number.push_back(carry);
+    }
+    return result;
+}
+// Assumes positive values.
+BigInt BigInt::sub(const BigInt &val) const {
+    size_t              max_len = std::max(m_big_integer_number.size(), val.m_big_integer_number.size());
+    BigInt              result(*this);
+
+    if(*this < val){
+        return -(val.sub(*this));
+    }
+
+    for(size_t i = result.m_big_integer_number.size() ; i < max_len ; ++i)
+        result.m_big_integer_number.push_back(0);
+
+    for(size_t i = 0 ; i < max_len ; ++i){
+        if(result[i] < val[i] && m_big_integer_number.size() < i + 1){
+            for(size_t k = i + 1 ; (*this)[k] ; ++k){
+                result[k]-=1;
+                result[k-1]+=BASE;
+            }
+        }
+        result[i] -= val[i];
+    }
     return result;
 }
 

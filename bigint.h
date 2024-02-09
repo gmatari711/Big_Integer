@@ -21,7 +21,6 @@ private:
     BigInt add(const BigInt& val)const;
     BigInt sub(const BigInt& val)const;
 
-    static BigInt add(const BigInt& lhs, const BigInt& rhs);
     static BigInt sub(const BigInt& lhs, const BigInt& rhs);
     inline int32_t& operator[](size_t index);
     inline int32_t operator[](size_t index)const;
