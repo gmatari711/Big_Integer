@@ -77,15 +77,21 @@ BigInt BigInt::operator+(int val) const {
 }
 
 BigInt BigInt::operator-(const BigInt &val) const {
+    // A - B or (-A) - (-B)
     if(m_sign == val.m_sign){
         if(m_sign == POS){
+            // A - B
             return this->sub(val);
         }
+        // (-A) - (-B) = -(A - B) = - (abs(-A) - abs(-B))
         return -(abs().sub(val.abs()));
     }
+    // (-A) - B or A - (-B)
     if(m_sign == POS){
+        // A - (-B) = A + B = A + abs(-B)
         return this->add(val.abs());
     }
+    // (-A) - B = -(A + B) = -(abs(-A) + B)
     return -(abs().add(val));
 }
 
