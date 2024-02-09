@@ -18,16 +18,24 @@ private:
 
     // Util Func
     static bool is_valid_text_input(const std::string& text);
+    BigInt add(const BigInt& val)const;
+    BigInt sub(const BigInt& val)const;
+
     static BigInt add(const BigInt& lhs, const BigInt& rhs);
     static BigInt sub(const BigInt& lhs, const BigInt& rhs);
     inline int32_t& operator[](size_t index);
     inline int32_t operator[](size_t index)const;
+    bool less_than_diff_sign(const BigInt& val)const;
+    bool less_than_same_sign(const BigInt& val)const;
 
 //think about the private data members
 public:
     BigInt(int val = 0);
     BigInt(const std::string& text);
     BigInt(const BigInt& copy); // copy constructor
+
+// Mathematical Operations
+    BigInt abs()const;
 
 // Binary Operators
 // Arithmetic Operators

@@ -61,12 +61,15 @@ bool BigInt::is_valid_text_input(const std::string &text)  {
 }
 
 BigInt BigInt::operator+(const BigInt &val) const {
-    if(this->m_sign == val.m_sign)
-        return add(*this,val);
-
-    else if(this->m_sign == POS)
-        return sub(*this, val);
-    return sub(val , *this);
+    if(this->m_sign == val.m_sign){
+        if(m_sign == POS)
+            return this->add(val);
+        else return -(this->abs().add(val));
+    }
+    else if(m_sign == POS){
+        return this->sub(val);
+    }
+    return -(this->abs().sub(-val));
 }
 
 BigInt BigInt::operator+(int val) const {
@@ -74,14 +77,16 @@ BigInt BigInt::operator+(int val) const {
 }
 
 BigInt BigInt::operator-(const BigInt &val) const {
-    if(this->m_sign != val.m_sign){
-        if(this->m_sign == POS)
-            return add(*this, -val);
-        return add(-*this,val);
+    if(m_sign == val.m_sign){
+        if(m_sign == POS){
+            return this->sub(val);
+        }
+        return -(abs().sub(val.abs()));
     }
-    else if(this->m_sign == POS)
-        return sub(*this, val);
-    return sub(val, *this);
+    if(m_sign == POS){
+        return this->add(val.abs());
+    }
+    return -(abs().add(val));
 }
 
 BigInt BigInt::operator-() const {
@@ -128,8 +133,6 @@ BigInt BigInt::sub(const BigInt &lhs, const BigInt &rhs) {
         }
         result[i] -= rhs[i];
     }
-
-
     return result;
 }
 
@@ -160,5 +163,123 @@ bool BigInt::operator==(const BigInt &val) const {
 bool BigInt::operator!=(const BigInt &val) const {
     return !(*this == val);
 }
+
+bool BigInt::operator<(const BigInt &val) const {
+    if(m_sign == val.m_sign){
+        return less_than_same_sign(val);
+    }
+    return less_than_same_sign(val);
+
+}
+
+bool BigInt::less_than_diff_sign(const BigInt &val) const {
+    // lhs is positive, so rhs is non-positive and therefor smaller.
+    if(m_sign == POS){
+        return false;
+    }
+    // lhs is negative, so rhs is non-negative and therefor smaller.
+    if(m_sign == NEG){
+        return true;
+    }
+    // lhs is zero, so either rhs is positive and therefor greater
+    if(val.m_sign == POS){
+        return true;
+    }
+    // or rhs is negative and therefor smaller.
+    return false;
+}
+
+bool BigInt::less_than_same_sign(const BigInt &val) const {
+    bool result = false;
+    // numbers are not of same magnitude
+    if(m_big_integer_number.size() != val.m_big_integer_number.size()){
+        // lhs is shorter than rhs
+        if(m_big_integer_number.size() < val.m_big_integer_number.size()){
+            // both positive -> lhs is shorter hence smaller.
+            result = (m_sign == POS);
+        }
+        else {
+            // both negative -> lhs is shorter hence greater.
+            result = (m_sign == NEG);
+        }
+    }
+    else {
+        bool quit = false;
+        for(size_t i = m_big_integer_number.size() ; i > 0 && !quit; --i){
+            // found first digit on lhs smaller than its parallel on rhs.
+            if((*this)[i - 1] < val[i - 1]){
+                quit = true;
+                // if lhs is positive it's smaller, otherwise it's greater.
+                result = (m_sign == POS);
+            }
+            // Mirror case to the former condition.
+            else if((*this)[i - 1] > val[i - 1]){
+                quit = true;
+                result = (m_sign == NEG);
+            }
+        }
+    }
+    return result;
+}
+
+bool BigInt::operator<=(const BigInt &val) const {
+    return (*this < val || *this == val);
+}
+
+bool BigInt::operator>(const BigInt &val) const {
+    return !(*this <= val);
+}
+
+bool BigInt::operator>=(const BigInt &val) const {
+    return !(*this < val);
+}
+
+BigInt BigInt::operator+=(const BigInt &rhs) {
+    *this = *this + rhs;
+    return *this;
+}
+
+BigInt BigInt::operator-=(const BigInt &rhs) {
+    *this = *this - rhs;
+    return *this;
+}
+
+BigInt BigInt::operator*=(const BigInt &rhs) {
+    *this = *this * rhs;
+    return *this;
+}
+
+BigInt &BigInt::operator++() {
+    *this+=1;
+    return *this;
+}
+
+BigInt BigInt::operator++(int) {
+    BigInt result = *this;
+    *this += 1;
+    return result;
+}
+
+BigInt &BigInt::operator--() {
+    *this -= 1;
+    return *this;
+}
+
+BigInt BigInt::operator--(int) {
+    BigInt result = *this;
+    *this -= 1;
+    return result;
+}
+
+BigInt BigInt::abs() const {
+    if(this->m_sign != NEG){
+        return BigInt(*this);
+    }
+    BigInt result(*this);
+    result.m_sign = POS;
+
+    return result;
+}
+
 
 
