@@ -313,8 +313,10 @@ BigInt BigInt::sub(const BigInt &val) const {
 
 BigInt BigInt::operator*(const BigInt &val) const {
     std::vector<std::vector<int32_t> > mul_vector(val.m_big_integer_number.size());
-    int32_t carry = 0;
-    int32_t current_mult = 0;
+    int32_t             carry = 0,
+                        current_mult = 0,
+                        current_sum = 0;
+    BigInt              result;
 // For any digit in rhs.
     for(size_t i = 0; i < val.m_big_integer_number.size() ; ++i){
         // Pad with i zeros.
@@ -330,6 +332,26 @@ BigInt BigInt::operator*(const BigInt &val) const {
         if(carry){
             mul_vector[i].push_back(carry);
         }
+    }
+    bool quit_flag = false;
+    carry = 0;
+    size_t i = 0;
+    while (!quit_flag){
+        quit_flag = true;
+        result.m_big_integer_number.push_back(carry);
+        for(std::vector<int32_t> vec : mul_vector){
+            if(i < vec.size()){
+                quit_flag = false;
+                current_sum += vec[i];
+            }
+        }
+       if(!quit_flag){
+           result[i++] += current_sum % BASE;
+           carry = current_sum / BASE;
+       }
+    }
+    if(result[result.m_big_integer_number.size() - 1] == 0){
+        result.m_big_integer_number.pop_back();
     }
 }
 
