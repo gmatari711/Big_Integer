@@ -312,6 +312,10 @@ BigInt BigInt::sub(const BigInt &val) const {
 }
 
 BigInt BigInt::operator*(const BigInt &val) const {
+    return multiplication(val);
+}
+
+BigInt BigInt::multiplication(const BigInt &val) const {
     std::vector<std::vector<int32_t> > mul_vector(val.m_big_integer_number.size());
     int32_t             carry = 0,
                         current_mult = 0,
@@ -345,14 +349,20 @@ BigInt BigInt::operator*(const BigInt &val) const {
                 current_sum += vec[i];
             }
         }
-       if(!quit_flag){
-           result[i++] += current_sum % BASE;
-           carry = current_sum / BASE;
-       }
+        if(!quit_flag){
+            result[i++] += current_sum % BASE;
+            carry = current_sum / BASE;
+        }
     }
     if(result[result.m_big_integer_number.size() - 1] == 0){
         result.m_big_integer_number.pop_back();
     }
+}
+
+BigInt BigInt::fast_multiplication(const BigInt &val) const {
+    // TO-DO: implementation of the Karatsuba fast multiplication algorithm
+    // Maybe use fft with polynomial rep as x = BASE (Base of 10^k)(?)
+    return *this;
 }
 
 

@@ -26,6 +26,8 @@ private:
     inline int32_t operator[](size_t index)const;
     bool less_than_diff_sign(const BigInt& val)const;
     bool less_than_same_sign(const BigInt& val)const;
+    BigInt multiplication(const BigInt& val)const;
+    BigInt fast_multiplication(const BigInt& val)const; //Karatsuba
 
 //think about the private data members
 public:
